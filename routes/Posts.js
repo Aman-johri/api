@@ -2,17 +2,15 @@ const router = require("express").Router();
 const Post = require("../models/Post");
 
 //CREATE POST
-router.post("/", (req, res) => {
-    const post = new Post({
-        title: req.body.title,
-        desc: req.body.desc,
-        categories: req.body.categories,
-    });
-    post.save().then((data) => {
-        res.send(data);
-    });
-});
-
+router.post("/", async (req, res) => {
+    const newPost = new Post(req.body);
+    try {
+      const savedPost = await newPost.save();
+      res.status(200).json(savedPost);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
 
 //UPDATE POST
 router.put("/:id", async (req, res) => {
@@ -22,6 +20,7 @@ router.put("/:id", async (req, res) => {
                 title: req.body.title,
                 desc: req.body.desc,
                 categories: req.body.categories,
+                img: req.body.img,
             }
         });
         res.send(updatedPost);
@@ -41,7 +40,7 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-//Get post by id
+// //Get post by id
 router.get("/:id", async (req, res) => {
     try{
         const post = await Post.find({_id: req.params.id});
@@ -52,23 +51,14 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-//Get post by category
+//Get all posts
 router.get("/", async (req, res) => {
-    const category = req.query.category;
-    try{
-        if(category){
-            const posts = await Post.find({categories: category});
-            res.status(200).json(posts);
-        }
-        else{
-            const posts = await Post.find();
-            res.status(200).json(posts);
-        }
+    try {
+      const posts = await Post.find().sort({_id: -1});
+      res.status(200).json(posts);
+    } catch (err) {
+      res.status(500).json(err);
     }
-    catch(err){
-        res.status(500).json(err);
-    }
-});
-
+  });
 
 module.exports = router;
