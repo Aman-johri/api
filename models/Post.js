@@ -20,7 +20,12 @@ const PostSchema = new mongoose.Schema({
     img:{
         type: String,
         required: false,
+    },
+    userID:{
+        type: String,
+        required: true,
     }
+
 },
     { timestamps: true}
 );

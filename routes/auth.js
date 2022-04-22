@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken');
 router.post("/register", [
   body("username", "Username is required").not().isEmpty(),
   body("email", "Email is in not correct formmat").isEmail().normalizeEmail(),
-  body("password", "Password must be in 5 character").isLength({ min: 5 })
+  body("password", "Password must be in 5 character").isLength({ min: 6 })
 ], async (req, res) => {
   const errors = validationResult(req);
   console.log(errors.array());
@@ -36,11 +36,11 @@ router.post("/register", [
 
 const maxAge = 3 * 24 * 60 * 60;
 
-const createToken = (id) => {
-   return jwt.sign({id}, "aman johri secret", {
-     expiresIn: maxAge
-   });
-}
+// const createToken = (id) => {
+//    return jwt.sign({id}, "aman johri secret", {
+//      expiresIn: maxAge
+//    });
+// }
 // router.get("/login", (req, res) => {
 //   res.send(200).json("login");
 // });
@@ -59,7 +59,7 @@ router.post("/login", async (req, res) => {
         const data = {username:user.username , id:user._id}
         const token = jwt.sign(data, "JWT_SECRET");
         console.log("token",token);
-        res.status(200).json({user: user._id , token});
+        res.status(200).json({user: user , token});
     }
   }
   else{

@@ -3,7 +3,9 @@ const Post = require("../models/Post");
 
 //CREATE POST
 router.post("/", async (req, res) => {
+  console.log(req.body);
     const newPost = new Post(req.body);
+    console.log("newPost" , newPost);
     try {
       const savedPost = await newPost.save();
       res.status(200).json(savedPost);
@@ -42,14 +44,28 @@ router.delete("/:id", async (req, res) => {
 
 // //Get post by id
 router.get("/:id", async (req, res) => {
+    console.log(req.params.id);
     try{
-        const post = await Post.find({_id: req.params.id});
+        const post = await Post.find({userID: req.params.id}).sort({_id : -1});
         res.status(200).json(post);
     }
     catch(err){
         res.status(500).json(err);
     }
 });
+
+
+router.get("/update/:id", async (req, res) => {
+  console.log(req.params.id);
+  try{
+      const post = await Post.find({userID: req.params.id});
+      res.status(200).json(post);
+  }
+  catch(err){
+      res.status(500).json(err);
+  }
+});
+
 
 //Get all posts
 router.get("/", async (req, res) => {
